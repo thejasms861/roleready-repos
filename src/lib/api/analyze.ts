@@ -43,32 +43,47 @@ export async function analyzeRepository(
   repoUrl: string,
   role: Role
 ): Promise<AnalysisResponse> {
-  const { data, error } = await supabase.functions.invoke(
-    "analyze-repo",
-    {
-      body: { repoUrl, role },
+  try {
+    // Use fetch directly to get proper error handling
+    const response = await fetch(
+      `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/analyze-repo`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+          'apikey': import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
+        },
+        body: JSON.stringify({ repoUrl, role }),
+      }
+    );
+
+    const data = await response.json();
+
+    // Check for error response
+    if (!response.ok || data.error) {
+      const errorMessage = data.error || "Failed to analyze repository";
+      
+      // Throw user-friendly errors
+      if (errorMessage.includes("not found") || errorMessage.includes("Not Found")) {
+        throw new Error("Repository not found. Please check that the URL is correct and the repository is public.");
+      }
+      if (errorMessage.includes("private")) {
+        throw new Error("This repository is private. Repository Mirror can only analyze public repositories.");
+      }
+      if (errorMessage.includes("rate limit")) {
+        throw new Error("GitHub API rate limit exceeded. Please try again in a few minutes.");
+      }
+      
+      throw new Error(errorMessage);
     }
-  );
 
-  // Handle edge function errors - the error body is still in data
-  if (error) {
-    // Try to extract the actual error message from the response
-    const errorMessage = data?.error || error.message || "Failed to analyze repository";
-    throw new Error(errorMessage);
+    return data;
+  } catch (err) {
+    // Re-throw with user-friendly message if it's a network error
+    if (err instanceof TypeError && err.message.includes('fetch')) {
+      throw new Error("Unable to connect to the analysis service. Please check your internet connection.");
+    }
+    throw err;
   }
-
-  if (!data) {
-    throw new Error("No response from analysis");
-  }
-  
-  // Check for error in response body (non-2xx that still returned data)
-  if (data.error) {
-    throw new Error(data.error);
-  }
-
-  if (!data.success && data.error) {
-    throw new Error(data.error);
-  }
-
-  return data;
 }
