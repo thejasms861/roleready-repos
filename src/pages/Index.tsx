@@ -40,18 +40,26 @@ export default function Index() {
       const errorMessage = err instanceof Error ? err.message : "Analysis failed";
       setError(errorMessage);
       
-      // Show toast popup for the error
-      if (errorMessage.includes("not found") || errorMessage.includes("private")) {
-        toast.error("Repository Not Found", {
-          description: "The repository doesn't exist or is private. Please check the URL and try again.",
+      // Show user-friendly toast popup
+      if (errorMessage.toLowerCase().includes("not found") || errorMessage.toLowerCase().includes("private") || errorMessage.toLowerCase().includes("404")) {
+        toast.error("Unable to Access Repository", {
+          description: "This repository either doesn't exist or is set to private. Please enter a valid public GitHub repository URL.",
+          duration: 5000,
         });
-      } else if (errorMessage.includes("rate limit")) {
-        toast.error("Rate Limited", {
-          description: "GitHub API rate limit exceeded. Please try again in a few minutes.",
+      } else if (errorMessage.toLowerCase().includes("rate limit")) {
+        toast.error("Too Many Requests", {
+          description: "We've hit a temporary limit. Please wait a moment and try again.",
+          duration: 5000,
+        });
+      } else if (errorMessage.toLowerCase().includes("connect") || errorMessage.toLowerCase().includes("network")) {
+        toast.error("Connection Error", {
+          description: "Unable to reach the server. Please check your internet connection and try again.",
+          duration: 5000,
         });
       } else {
-        toast.error("Analysis Failed", {
-          description: errorMessage,
+        toast.error("Something Went Wrong", {
+          description: "We couldn't analyze this repository. Please try again or use a different repository.",
+          duration: 5000,
         });
       }
       
