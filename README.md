@@ -8,6 +8,13 @@ Repository Mirror is an AI-powered GitHub repository evaluation platform that he
 
 ---
 
+
+## Demo Vedio
+
+https://github.com/user-attachments/assets/8fe58f59-f099-46a4-8079-8882e349fca0
+
+---
+
 ## Features
 
 - **Role-Calibrated Evaluation** - Scored against the exact signals hiring managers look for (Frontend, Backend, Full-Stack, Data/ML, Open Source)
