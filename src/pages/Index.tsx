@@ -4,48 +4,9 @@ import { UrlInput } from "@/components/UrlInput";
 import { RoleSelector, Role } from "@/components/RoleSelector";
 import { AnalysisResults } from "@/components/AnalysisResults";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, GitBranch, Target, Map, Sparkles } from "lucide-react";
-
-// Mock data for demonstration
-const mockAnalysis = {
-  score: 67,
-  tier: "emerging" as const,
-  badge: "silver" as const,
-  summary:
-    "For a junior backend role, this project shows solid logic and API structure, but the absence of tests and inconsistent commit history would raise immediate concerns in a real hiring loop. The code organization is clean, but production-readiness signals are missing.",
-  strengths: [
-    "Clear separation of concerns in API routes",
-    "Consistent naming conventions throughout",
-    "Good use of environment variables for configuration",
-  ],
-  gaps: [
-    "No test coverage — this is a blocker for most backend roles",
-    "Missing input validation on critical endpoints",
-    "README lacks setup instructions and API documentation",
-  ],
-  roadmap: [
-    {
-      action: "Add request validation middleware",
-      impact: "Reduces production risk and shows security awareness",
-      effort: "low" as const,
-    },
-    {
-      action: "Write unit tests for core business logic",
-      impact: "Demonstrates professional development practices",
-      effort: "medium" as const,
-    },
-    {
-      action: "Add comprehensive README with setup guide",
-      impact: "Lowers reviewer friction and shows communication skills",
-      effort: "low" as const,
-    },
-    {
-      action: "Implement proper error handling patterns",
-      impact: "Shows production experience and debugging capability",
-      effort: "medium" as const,
-    },
-  ],
-};
+import { ArrowRight, GitBranch, Target, Map, Sparkles, AlertCircle } from "lucide-react";
+import { analyzeRepository, EvaluationResult } from "@/lib/api/analyze";
+import { toast } from "sonner";
 
 type Step = "input" | "role" | "analyzing" | "results";
 
@@ -53,6 +14,8 @@ export default function Index() {
   const [step, setStep] = useState<Step>("input");
   const [repoUrl, setRepoUrl] = useState("");
   const [selectedRole, setSelectedRole] = useState<Role | null>(null);
+  const [analysisResult, setAnalysisResult] = useState<EvaluationResult | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   const handleUrlSubmit = (url: string) => {
     setRepoUrl(url);
@@ -63,29 +26,46 @@ export default function Index() {
     setSelectedRole(role);
   };
 
-  const handleAnalyze = () => {
+  const handleAnalyze = async () => {
     if (!selectedRole) return;
     setStep("analyzing");
-    // Simulate analysis time
-    setTimeout(() => {
+    setError(null);
+
+    try {
+      const response = await analyzeRepository(repoUrl, selectedRole);
+      setAnalysisResult(response.evaluation);
       setStep("results");
-    }, 2500);
+    } catch (err) {
+      console.error("Analysis failed:", err);
+      const errorMessage = err instanceof Error ? err.message : "Analysis failed";
+      setError(errorMessage);
+      toast.error(errorMessage);
+      setStep("role");
+    }
   };
 
   const handleReset = () => {
     setStep("input");
     setRepoUrl("");
     setSelectedRole(null);
+    setAnalysisResult(null);
+    setError(null);
   };
 
-  if (step === "results") {
+  if (step === "results" && analysisResult) {
     return (
       <>
         <Header />
         <AnalysisResults
           repoUrl={repoUrl}
           role={selectedRole!}
-          {...mockAnalysis}
+          score={analysisResult.score}
+          tier={analysisResult.tier}
+          badge={analysisResult.badge}
+          summary={analysisResult.summary}
+          strengths={analysisResult.strengths}
+          gaps={analysisResult.gaps}
+          roadmap={analysisResult.roadmap}
           onReset={handleReset}
         />
       </>
@@ -105,7 +85,7 @@ export default function Index() {
             <div className="space-y-2">
               <h2 className="text-xl font-semibold text-foreground">Analyzing Repository</h2>
               <p className="text-sm text-muted-foreground font-mono max-w-sm">
-                Evaluating code structure, patterns, and hiring signals...
+                Fetching repository data and evaluating hiring signals...
               </p>
             </div>
           </div>
@@ -184,6 +164,13 @@ export default function Index() {
                     How should we evaluate your repository?
                   </p>
                 </div>
+
+                {error && (
+                  <div className="p-4 rounded-lg border border-destructive/50 bg-destructive/10 flex items-start gap-3">
+                    <AlertCircle className="w-5 h-5 text-destructive flex-shrink-0 mt-0.5" />
+                    <div className="text-sm text-destructive">{error}</div>
+                  </div>
+                )}
 
                 <div className="p-6 rounded-xl border border-border bg-card/50">
                   <RoleSelector

@@ -5,16 +5,23 @@ import { Role } from "./RoleSelector";
 import { ArrowLeft, ExternalLink } from "lucide-react";
 import { Button } from "./ui/button";
 
+interface RoadmapItem {
+  action: string;
+  impact: "high" | "medium" | "low";
+  effort: "high" | "medium" | "low";
+  reason: string;
+}
+
 interface AnalysisResultsProps {
   repoUrl: string;
   role: Role;
   score: number;
-  tier: "not-ready" | "emerging" | "hire-approaching" | "role-ready";
-  badge: "bronze" | "silver" | "gold";
+  tier: "Not Ready" | "Emerging" | "Hire-Approaching" | "Role-Ready";
+  badge: "bronze" | "silver" | "gold" | "none";
   summary: string;
   strengths: string[];
   gaps: string[];
-  roadmap: { action: string; impact: string; effort: "low" | "medium" | "high" }[];
+  roadmap: RoadmapItem[];
   onReset: () => void;
 }
 

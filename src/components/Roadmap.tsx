@@ -3,8 +3,9 @@ import { cn } from "@/lib/utils";
 
 interface RoadmapItem {
   action: string;
-  impact: string;
-  effort: "low" | "medium" | "high";
+  impact: "high" | "medium" | "low";
+  effort: "high" | "medium" | "low";
+  reason: string;
 }
 
 interface RoadmapProps {
@@ -49,7 +50,7 @@ export function Roadmap({ items }: RoadmapProps) {
                 </div>
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <ArrowRight className="w-3 h-3 text-insight flex-shrink-0" />
-                  <span>{item.impact}</span>
+                  <span>{item.reason}</span>
                 </div>
               </div>
             </div>
