@@ -1,73 +1,178 @@
-# Welcome to your Lovable project
+# Repository Mirror
 
-## Project info
+**See your code through a recruiter's eyes.**
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+Repository Mirror is an AI-powered GitHub repository evaluation platform that helps students and early-career developers understand how their projects measure up to real hiring expectations for specific roles.
 
-## How can I edit this code?
+![Repository Mirror](https://img.shields.io/badge/AI--Powered-Portfolio%20Review-amber)
 
-There are several ways of editing your application.
+---
 
-**Use Lovable**
+## Features
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+- **Role-Calibrated Evaluation** - Scored against the exact signals hiring managers look for (Frontend, Backend, Full-Stack, Data/ML, Open Source)
+- **Honest Feedback** - Clear strengths, non-negotiable gaps. No sugar-coating.
+- **Strict Recruiter Scoring** - Based on real hiring criteria with hard caps for missing tests, README, etc.
+- **Personalized Roadmap** - Prioritized steps to go from "interesting" to interview-worthy.
 
-Changes made via Lovable will be committed automatically to this repo.
+---
 
-**Use your preferred IDE**
+## How It Works
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+1. **Paste your GitHub repository URL** - Enter any public GitHub repository
+2. **Select your target role** - Choose the role you are applying for
+3. **Get AI-powered analysis** - Receive a detailed evaluation with:
+   - Overall score (0-100)
+   - Readiness tier (Not Ready → Role-Ready)
+   - Strengths and gaps
+   - Actionable improvement roadmap
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+---
 
-Follow these steps:
+## Scoring Rubric
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+| Category | Max Points |
+|----------|------------|
+| Code Quality & Readability | 25 |
+| Project Structure & Organization | 15 |
+| Documentation Quality | 15 |
+| Testing & Maintainability | 15 |
+| Real-World Applicability | 15 |
+| Git & Commit Hygiene | 15 |
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+### Hard Caps (Automatic Score Limits)
 
-# Step 3: Install the necessary dependencies.
-npm i
+- No README → Max score: 45
+- No tests → Max score: 75
+- One-day commit history → Max score: 65
+- Tutorial clone → Max score: 70
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+---
+
+## Tech Stack
+
+- **Frontend**: React + TypeScript + Vite
+- **Styling**: Tailwind CSS + shadcn/ui
+- **Backend**: Lovable Cloud (Edge Functions)
+- **AI**: Lovable AI (Google Gemini)
+
+---
+
+## Local Development Setup
+
+### Prerequisites
+
+- Node.js 18+ installed
+- npm or bun package manager
+
+### Installation
+
+1. **Clone the repository**
+   ```bash
+   git clone <your-repo-url>
+   cd repository-mirror
+   ```
+
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Set up environment variables**
+   
+   Create a `.env` file in the root directory:
+   ```env
+   VITE_SUPABASE_URL=your_supabase_url
+   VITE_SUPABASE_PUBLISHABLE_KEY=your_supabase_anon_key
+   ```
+
+4. **Start the development server**
+   ```bash
+   npm run dev
+   ```
+
+5. **Open your browser**
+   
+   Navigate to `http://localhost:5173`
+
+---
+
+## Deployment
+
+This project is built with Lovable and can be deployed directly through the Lovable platform:
+
+1. Click the **Publish** button in the Lovable editor
+2. Your app will be deployed to a `.lovable.app` subdomain
+3. Optionally connect a custom domain in Project Settings
+
+---
+
+## Project Structure
+
+```
+repository-mirror/
+├── src/
+│   ├── components/
+│   │   ├── ui/              # shadcn/ui components
+│   │   ├── Header.tsx       # App header
+│   │   ├── UrlInput.tsx     # GitHub URL input
+│   │   ├── RoleSelector.tsx # Role selection
+│   │   ├── ScoreDisplay.tsx # Circular score display
+│   │   ├── EvaluationSummary.tsx
+│   │   ├── Roadmap.tsx      # Improvement roadmap
+│   │   └── AnalysisResults.tsx
+│   ├── lib/
+│   │   └── api/
+│   │       └── analyze.ts   # API client for analysis
+│   ├── pages/
+│   │   └── Index.tsx        # Main page
+│   └── index.css            # Global styles & design tokens
+├── supabase/
+│   └── functions/
+│       └── analyze-repo/    # Edge function for AI analysis
+└── README.md
 ```
 
-**Edit a file directly in GitHub**
+---
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+## Usage
 
-**Use GitHub Codespaces**
+1. Enter a **public** GitHub repository URL
+2. Select the role you want to be evaluated for:
+   - Frontend Developer
+   - Backend Developer
+   - Full-Stack Developer
+   - Data / ML Engineer
+   - Open Source / Generalist
+3. Click **Start Analysis**
+4. Review your score, summary, and improvement roadmap
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+### Supported Repository Types
 
-## What technologies are used for this project?
+- ✅ Public GitHub repositories
+- ❌ Private repositories (not accessible via public API)
+- ❌ GitLab, Bitbucket, or other platforms
 
-This project is built with:
+---
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+## Contributing
 
-## How can I deploy this project?
+Contributions are welcome! Please feel free to submit a Pull Request.
 
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
+---
 
-## Can I connect a custom domain to my Lovable project?
+## License
 
-Yes, you can!
+MIT License - feel free to use this project for your own learning and development.
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+---
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+## Acknowledgments
+
+- Built with [Lovable](https://lovable.dev)
+- UI components from [shadcn/ui](https://ui.shadcn.com)
+- AI powered by Lovable AI
+
+---
+
+**Repository Mirror does not judge effort — it evaluates signal.**
