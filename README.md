@@ -161,12 +161,6 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 ---
 
-## License
-
-MIT License - feel free to use this project for your own learning and development.
-
----
-
 ## Acknowledgments
 
 - UI components from [shadcn/ui](https://ui.shadcn.com)
