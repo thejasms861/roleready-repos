@@ -2,22 +2,22 @@ import { cn } from "@/lib/utils";
 
 interface ScoreDisplayProps {
   score: number;
-  tier: "not-ready" | "emerging" | "hire-approaching" | "role-ready";
-  badge: "bronze" | "silver" | "gold";
+  tier: "Not Ready" | "Emerging" | "Hire-Approaching" | "Role-Ready";
+  badge: "bronze" | "silver" | "gold" | "none";
 }
 
-const tierLabels = {
-  "not-ready": "Not Ready",
-  "emerging": "Emerging",
-  "hire-approaching": "Hire-Approaching",
-  "role-ready": "Role-Ready",
+const tierColors: Record<string, string> = {
+  "Not Ready": "text-destructive",
+  "Emerging": "text-muted-foreground",
+  "Hire-Approaching": "text-insight",
+  "Role-Ready": "text-success",
 };
 
-const tierColors = {
-  "not-ready": "text-destructive",
-  "emerging": "text-muted-foreground",
-  "hire-approaching": "text-insight",
-  "role-ready": "text-success",
+const badgeStyles: Record<string, string> = {
+  bronze: "badge-bronze",
+  silver: "badge-silver",
+  gold: "badge-gold",
+  none: "bg-muted text-muted-foreground",
 };
 
 export function ScoreDisplay({ score, tier, badge }: ScoreDisplayProps) {
@@ -62,21 +62,21 @@ export function ScoreDisplay({ score, tier, badge }: ScoreDisplayProps) {
 
       {/* Tier Label */}
       <div className="text-center space-y-2">
-        <div className={cn("text-lg font-semibold", tierColors[tier])}>
-          {tierLabels[tier]}
+        <div className={cn("text-lg font-semibold", tierColors[tier] || "text-muted-foreground")}>
+          {tier}
         </div>
         
         {/* Badge */}
-        <div
-          className={cn(
-            "inline-block px-4 py-1.5 rounded-full text-sm font-semibold uppercase tracking-wide",
-            badge === "bronze" && "badge-bronze",
-            badge === "silver" && "badge-silver",
-            badge === "gold" && "badge-gold"
-          )}
-        >
-          {badge}
-        </div>
+        {badge !== "none" && (
+          <div
+            className={cn(
+              "inline-block px-4 py-1.5 rounded-full text-sm font-semibold uppercase tracking-wide",
+              badgeStyles[badge]
+            )}
+          >
+            {badge}
+          </div>
+        )}
       </div>
 
       <p className="text-xs text-muted-foreground text-center max-w-xs font-mono">
