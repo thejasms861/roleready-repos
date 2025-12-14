@@ -43,19 +43,27 @@ export async function analyzeRepository(
   repoUrl: string,
   role: Role
 ): Promise<AnalysisResponse> {
-  const { data, error } = await supabase.functions.invoke<AnalysisResponse>(
+  const { data, error } = await supabase.functions.invoke(
     "analyze-repo",
     {
       body: { repoUrl, role },
     }
   );
 
+  // Handle edge function errors - the error body is still in data
   if (error) {
-    throw new Error(error.message || "Failed to analyze repository");
+    // Try to extract the actual error message from the response
+    const errorMessage = data?.error || error.message || "Failed to analyze repository";
+    throw new Error(errorMessage);
   }
 
   if (!data) {
     throw new Error("No response from analysis");
+  }
+  
+  // Check for error in response body (non-2xx that still returned data)
+  if (data.error) {
+    throw new Error(data.error);
   }
 
   if (!data.success && data.error) {

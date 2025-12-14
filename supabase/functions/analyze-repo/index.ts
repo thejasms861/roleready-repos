@@ -149,10 +149,21 @@ async function fetchGitHubData(repoUrl: string) {
   
   if (!repoRes.ok) {
     const errorData = await repoRes.json().catch(() => ({}));
-    throw new Error(`Repository not found or not accessible: ${errorData.message || repoRes.status}`);
+    if (repoRes.status === 404) {
+      throw { status: 404, message: 'Repository not found. Make sure the URL is correct and the repository is public.' };
+    }
+    if (repoRes.status === 403) {
+      throw { status: 403, message: 'GitHub API rate limit exceeded. Please try again in a few minutes.' };
+    }
+    throw { status: repoRes.status, message: errorData.message || 'Failed to access repository' };
   }
   
   const repoData = await repoRes.json();
+  
+  // Check if repo is private
+  if (repoData.private) {
+    throw { status: 403, message: 'This repository is private. Repository Mirror can only analyze public repositories.' };
+  }
   
   // Get README content
   let readmeContent = '';
@@ -353,13 +364,13 @@ Provide your evaluation as JSON only.`;
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
     
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error in analyze-repo function:', error);
+    const statusCode = error?.status || 500;
+    const errorMessage = error?.message || (error instanceof Error ? error.message : 'Analysis failed');
     return new Response(
-      JSON.stringify({ 
-        error: error instanceof Error ? error.message : 'Analysis failed' 
-      }),
-      { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      JSON.stringify({ error: errorMessage }),
+      { status: statusCode, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   }
 });
