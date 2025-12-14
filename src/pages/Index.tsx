@@ -39,7 +39,22 @@ export default function Index() {
       console.error("Analysis failed:", err);
       const errorMessage = err instanceof Error ? err.message : "Analysis failed";
       setError(errorMessage);
-      toast.error(errorMessage);
+      
+      // Show toast popup for the error
+      if (errorMessage.includes("not found") || errorMessage.includes("private")) {
+        toast.error("Repository Not Found", {
+          description: "The repository doesn't exist or is private. Please check the URL and try again.",
+        });
+      } else if (errorMessage.includes("rate limit")) {
+        toast.error("Rate Limited", {
+          description: "GitHub API rate limit exceeded. Please try again in a few minutes.",
+        });
+      } else {
+        toast.error("Analysis Failed", {
+          description: errorMessage,
+        });
+      }
+      
       setStep("role");
     }
   };
