@@ -169,9 +169,8 @@ MIT License - feel free to use this project for your own learning and developmen
 
 ## Acknowledgments
 
-- Built with [Lovable](https://lovable.dev)
 - UI components from [shadcn/ui](https://ui.shadcn.com)
-- AI powered by Lovable AI
+
 
 ---
 
